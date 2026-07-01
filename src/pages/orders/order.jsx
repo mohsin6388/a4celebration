@@ -190,7 +190,17 @@ export default function OrderConfirmation() {
                 <div className="space-y-2">
                   <div className="flex items-start">
                     <Clock className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
-                    <p className="text-gray-700">{orderData?.deliveryNotes || 'No delivery notes available'}</p>
+                <p className="text-gray-700">
+  {orderData?.orderDetails?.products?.[0]?.order_requested_date
+    ? `Requested Date: ${new Date(orderData.orderDetails.products[0].order_requested_date)
+        .toLocaleDateString("en-GB")
+        .replace(/\//g, "-")}`
+    : `Notes: ${orderData?.deliveryNotes || "No delivery notes available"}`}
+</p>
+
+
+                    {console.log(orderData?.orderDetails.products[0].order_requested_date
+)}
                     {console.log(orderData?.deliveryNotes)}
                   </div>
                   <div className="mt-2">

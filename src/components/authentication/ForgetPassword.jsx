@@ -4,6 +4,7 @@ import { Mail, ArrowLeft } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { API } from "../../utils/api";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ const ForgetPassword = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("https://a4celebration.com/api/api/auth/forget-password", { email }, {
+      const response = await axios.post(`${API}api/auth/forget-password`, { email }, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${API_KEY}`

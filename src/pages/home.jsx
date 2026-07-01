@@ -17,9 +17,16 @@ import ProductSection6 from '../components/product/product-section-6';
 import WhyChooseUs from '../components/service/WhyChooseUs';
 import CustomerReviewSlider from '../components/service/CustomerReviewSlider';
 import MetaTags from '../components/SEO/MetaTags';
+import Banner4 from '../components/banner/banner4';
+import Banner5 from '../components/banner/banner5';
+
+
 
 
 const Home = () => {
+  
+   
+
   return (
     <>
       <div className='bg-yellow-50'>
@@ -35,12 +42,16 @@ const Home = () => {
         <AboutDetails></AboutDetails>
         <Banner1></Banner1>
         <ProductSection1></ProductSection1>
+          <Banner2 ></Banner2>
         <ProductSection2></ProductSection2>
-        <Banner2 ></Banner2>
+        <Banner4></Banner4>
+      
         <ProductSection6></ProductSection6>
-        <ProductSection3></ProductSection3>
-        <ProductSection4></ProductSection4>
+        <Banner5></Banner5>
+        
+         <ProductSection3></ProductSection3>
         <Banner3></Banner3>
+       
         <ProductSection5></ProductSection5>
 
         <CustomerReviewSlider></CustomerReviewSlider>

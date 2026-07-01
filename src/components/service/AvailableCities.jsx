@@ -18,12 +18,10 @@ const AvailableCities = () => {
 console.log(selectedCity)
  const cities = [
     { name: "Kanpur", href: "/pandits/Kanpur", src:kanpur  },
-    { name: "Bengaluru", href: "/pandits/Bengaluru", src: "https://pujapurohit.in/assets/images/cities/bengluru.webp" },
     { name: "Delhi", href: "/pandits/Delhi", src: "https://pujapurohit.in/assets/images/cities/newdelhi.webp" },
     { name: "Noida", href: "/pandits/Noida", src: "https://firebasestorage.googleapis.com/v0/b/mongodb-asset/o/places%2Fnoida.png?alt=media&token=902ba55d-2469-40cd-9f10-b6f2672f8a10&_gl=1*vlbioo*_ga*MTE0NDIwNTUxMi4xNjU0MjY0Mzg0*_ga_CW55HF8NVT*MTY5NzcyMjAxNS4zNzYuMS4xNjk3NzIyNTM4LjYwLjAuMA.." },
-    { name: "Gurugram", href: "/pandits/Gurugram", src: "https://firebasestorage.googleapis.com/v0/b/mongodb-asset/o/cities%2Fgurugram.png?alt=media&token=f860b4bf-c9a3-480b-9bac-e6b26f92e772" },
-    { name: "Pune", href: "/pandits/Pune", src: "https://pujapurohit.in/assets/images/cities/pune.webp" },
-    { name: "Mumbai", href: "/pandits/Mumbai", src: "https://pujapurohit.in/assets/images/cities/mumbai.webp" },
+    { name: "Gurugram", href: "/pandits/Gurugram", src: "https://firebasestorage.googleapis.com/v0/b/mongodb-asset/o/cities%2Fgurugram.png?alt=media&token=f860b4bf-c9a3-480b-9bac-e6b26f92e772" }
+    
   ];
 
 
@@ -33,7 +31,7 @@ console.log(selectedCity)
   };
 
   return (
-    <div className="flex bg-gradient-to-r from-amber-500 to-amber-600 w-full flex-wrap items-center md:px-8 px-2 py-6">
+    <div className="flex bg-gradient-to-r from-amber-500 to-amber-600 w-full flex-wrap items-center justify-center md:px-8 px-2 py-6">
       <div className="md:flex items-center justify-center w-full">
         <div className="text-amber-50 text-center md:text-left mb-2 md:mb-0">
           <p className="md:flex md:flex-col">

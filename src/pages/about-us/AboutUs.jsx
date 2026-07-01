@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
 import { FaGift, FaGlassCheers, FaBirthdayCake, FaCar, FaHeart, FaLeaf } from 'react-icons/fa';
-import img1 from '../../assets/banner/corporate-event-planner.webp';
+
 import { Link } from 'react-router-dom';
+import vinay from '../../assets/team/WhatsApp Image 2025-09-21 at 12.13.05 AM.webp'
+import aryan from "/src/assets/team/WhatsApp Image 2025-09-21 at 12.09.32 AM.webp";
+import img1 from '../../assets/banner/mobile/nbsj0uhbbklm8ubngjdr.webp'
 
 const AboutUs = () => {
   const services = [
@@ -14,10 +17,10 @@ const AboutUs = () => {
   ];
 
   const team = [
-    { name: "Aarav Sharma", role: "Founder", image: "https://randomuser.me/api/portraits/men/32.jpg" },
-    { name: "Priya Patel", role: "Event Manager", image: "https://randomuser.me/api/portraits/women/44.jpg" },
-    { name: "Rahul Verma", role: "Decor Specialist", image: "https://randomuser.me/api/portraits/men/75.jpg" },
-    { name: "Neha Gupta", role: "Gift Curator", image: "https://randomuser.me/api/portraits/women/68.jpg" }
+    { name: "Aryan", role: "Founder", image: aryan },
+    { name: "Shobhit Shukla", role: "Event Manager", image: "https://randomus.me/api/portraits/women/44.jpg" },
+    { name: "Shivanshu Batham", role: "Decor Specialist", image: "https://randomus.me/api/portraits/men/75.jpg" },
+    { name: "Vinay", role: "Gift Curator", image: vinay }
   ];
 
   return (
@@ -64,8 +67,8 @@ const AboutUs = () => {
               Expanded to include e-commerce gifting platform across India.
             </p>
             <div className="flex gap-2 flex-wrap">
-              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">500+ Events</span>
-              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">50+ Cities</span>
+              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">30+ Events</span>
+              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">3+ Cities</span>
             </div>
           </div>
         </div>
@@ -107,6 +110,7 @@ const AboutUs = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {team.map((member, index) => (
+          
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -115,6 +119,7 @@ const AboutUs = () => {
               viewport={{ once: true }}
               className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
+              {console.log(member.image.aryan)}
               <div className="aspect-square overflow-hidden">
                 <img 
                   src={member.image} 

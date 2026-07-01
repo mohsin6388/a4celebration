@@ -1,5 +1,12 @@
 import CardTypeC from '../cards/card-type-c';
 import img1 from '../../assets/caterings/Catering-In-Riyadh-300x300.jpg'
+import weddingCater from "../../assets/caterings/wedding-catering.jpg"
+import vegNonveg from "../../assets/caterings/veg-nonveg.jpg"
+import liveCounter from "../../assets/caterings/live-counter.jpg"
+import customFood from "../../assets/caterings/custom-food.jpg"
+import corporateCater from "../../assets/caterings/corporate-catering.jpg"
+import buffetService from "../../assets/caterings/buffet-service.jpg"
+import birthdayCater from "../../assets/caterings/birthday-catering.jpg"
 import CardTypeA from '../cards/card-type-a';
 
 const ProductSection5 = () => {
@@ -7,7 +14,7 @@ const ProductSection5 = () => {
     {
       id: 1,
       name: "Wedding Catering",
-      image: img1,
+      image: weddingCater,
       price: 120,
       rating: 4.8,
       slug_url: "wedding-catering"
@@ -15,7 +22,7 @@ const ProductSection5 = () => {
     {
       id: 2,
       name: "Corporate Catering",
-      image: img1,
+      image: corporateCater,
       price: 100,
       rating: 4.6,
       slug_url: "corporate-catering"
@@ -23,7 +30,7 @@ const ProductSection5 = () => {
     {
       id: 3,
       name: "Birthday Catering",
-      image: img1,
+      image: birthdayCater,
       price: 90,
       rating: 4.7,
       slug_url: "birthday-catering"
@@ -31,7 +38,7 @@ const ProductSection5 = () => {
     {
       id: 4,
       name: "Buffet Services",
-      image: img1,
+      image: buffetService,
       price: 150,
       rating: 4.9,
       slug_url: "buffet-services"
@@ -39,7 +46,7 @@ const ProductSection5 = () => {
     {
       id: 5,
       name: "Live Counter Setup",
-      image: img1,
+      image: liveCounter,
       price: 200,
       rating: 4.5,
       slug_url: "live-counter-setup"
@@ -47,7 +54,7 @@ const ProductSection5 = () => {
     {
       id: 6,
       name: "Veg & Non-Veg Packages",
-      image: img1,
+      image: vegNonveg,
       price: 180,
       rating: 4.4,
       slug_url: "veg-nonveg-packages"
@@ -55,7 +62,7 @@ const ProductSection5 = () => {
     {
       id: 7,
       name: "Custom Menu Planning",
-      image: img1,
+      image: customFood,
       price: 130,
       rating: 4.6,
       slug_url: "custom-menu-planning"

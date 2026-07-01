@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import img1 from '../../assets/banner/Sa Re Ga Ma Pa.webp'
+import img2 from '../../assets/banner/mobile/nbsj0uhbbklm8ubngjdr.webp'
 
 // Image sources for Banner3
-const desktopImg = 'https://cheetah.cherishx.com/website_layout/1680x400_Banner-2_Desktop_home_page_layout.jpg?format=avif';
-const mobileImg = 'https://jusst4you.com/wp-content/uploads/2025/04/proposal-banner-768x384.webp';
+const desktopImg = img1;
+const mobileImg = img2;
 
 const Banner3 = () => {
   return (

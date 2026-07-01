@@ -3,7 +3,7 @@ import { Heart, ShoppingCart, Star, ChevronRight, Gift, Sparkles } from 'lucide-
 import DeliveryInfo from '../../components/delivery/DeliveryInfo';
 import PincodeDeliveryChecker from '../../components/delivery/Delivery-date';
 import RelatedProductSection1 from '../../components/related-products-feed/related-product-section-1';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useCart } from '../../hooks/cartHook';
 import { ToastContainer, toast } from 'react-toastify';
 import { TimeSlotPicker } from '../../components/delivery/DateTimePicker';
@@ -16,8 +16,8 @@ import WishlistButton from '../wishlist/WishlistButton';
 import CompactRating from '../../components/ratings/RatingWithReviews';
 import CompactReviewSlider from '../../components/ratings/Rating';
 import MetaTags from '../../components/SEO/MetaTags';
-
-
+import { getProductBySlug } from '../../services/decorations/product-api-service';
+import {API} from '../../utils/api';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
@@ -50,15 +50,14 @@ const styles = `
 `;
 
 const DecorationsDetailsPage = () => {
+  const { slug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { serviceData, sectionData } = location.state;
-  const { userData } = useSelector((state) => state.user);
-  const { cartItems: initialCartItems, isLoading: isCartLoading } = useUserCartData();
-  const { addToCart, updateItem } = useCart();
-
-  const [mainImage, setMainImage] = useState(serviceData.featured_image);
+  const [serviceData, setServiceData] = useState(null);
+  const [mainImage, setMainImage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isDeliveryAvailable, setIsDeliveryAvailable] = useState(false);
   const [pincode, setPincode] = useState("");
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -66,11 +65,36 @@ const DecorationsDetailsPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
   const [existingCartItem, setExistingCartItem] = useState(null);
-   const { cart, clearCart, removeItem } = useCart();
 
-  // Check if item is already in cart
+  const { userData } = useSelector((state) => state.user);
+  const { cartItems: initialCartItems, isLoading: isCartLoading } = useUserCartData();
+  const { addToCart, updateItem, clearCart } = useCart();
+
+  // Fetch product by slug when component mounts
   useEffect(() => {
-    if (!isCartLoading && initialCartItems) {
+    const fetchProductData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getProductBySlug(slug);
+        setServiceData(response.data);
+        setMainImage(response.data.featured_image);
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError(err.response?.data?.message || 'Failed to load product');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) {
+      fetchProductData();
+    }
+  }, [slug]);
+
+  // Check if item is already in cart - ONLY when serviceData is available
+  useEffect(() => {
+    if (!isCartLoading && initialCartItems && serviceData) {
       const foundItem = initialCartItems.find(
         item => item.product_id === serviceData.product_id
       );
@@ -79,18 +103,22 @@ const DecorationsDetailsPage = () => {
         setExistingCartItem(foundItem);
       }
     }
-  }, [initialCartItems, isCartLoading, serviceData.product_id]);
+  }, [initialCartItems, isCartLoading, serviceData]); // Added serviceData to dependency array
 
   const handleBookNow = async () => {
+    if (!serviceData) return;
+    
     if (!dateTime) {
       toast.error('Please select a date and time slot');
       return;
     }
+    
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userId = localStorage.getItem('userId');
+    
     if (!isLoggedIn || !userId) {
       toast.info('Please login to book services', {
-        autoClose: 1000, // Toast closes in 2 seconds
+        autoClose: 1000,
         onClose: () => navigate("/login")
       });
       return;
@@ -103,7 +131,7 @@ const DecorationsDetailsPage = () => {
     const cartItem = {
       product_id: serviceData.product_id,
       product_name: serviceData.name,
-      quantity: 1, // Fixed to 1 for decoration items
+      quantity: 1,
       service_date: dateTime.date,
       service_time: formattedTime,
       pinCode: pincode,
@@ -126,8 +154,7 @@ const DecorationsDetailsPage = () => {
         );
         toast.success('Cart details updated!');
       } else {
-
-         await clearCart(userId)
+        await clearCart(userId);
         // Add new item
         await addToCart({
           userID: userData?.data?._id,
@@ -152,8 +179,8 @@ const DecorationsDetailsPage = () => {
   };
 
   const calculateDiscount = () => {
-    if (!serviceData.mrp_price) return 0;
-    return Math.round((1 - serviceData.price / (serviceData.mrp_price)) * 100);
+    if (!serviceData?.mrp_price) return 0;
+    return Math.round((1 - serviceData.price / serviceData.mrp_price) * 100);
   };
 
   const formatPrice = (price) => {
@@ -164,18 +191,63 @@ const DecorationsDetailsPage = () => {
     }).format(price);
   };
 
-  const [descriptionPart, kitPart] = serviceData.description.split('Kit:');
-
-  // Image handling with fallback
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return '/images/placeholder-product.jpg';
-    return imagePath.startsWith('http') ? imagePath : `https://a4celebration.com/api/${imagePath}`;
+  // Handle description splitting safely
+  const getDescriptionParts = () => {
+    if (!serviceData?.description) return ['', ''];
+    const parts = serviceData.description.split('Kit:');
+    return [parts[0], parts[1] || ''];
   };
 
+  const [descriptionPart, kitPart] = getDescriptionParts();
 
-  useEffect(() => {
-    setMainImage(serviceData.featured_image); // Reset to new product's image
-  }, [serviceData]); // Trigger when `serviceData` updates
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
+        <style>{styles}</style>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Product</h2>
+          <p className="text-gray-600">{error}</p>
+          <button 
+            onClick={() => navigate(-1)}
+            className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg"
+          >
+            Go Back
+          </button>
+        </div>
+        <style>{styles}</style>
+      </div>
+    );
+  }
+
+  // Show product not found state
+  if (!serviceData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
+          <p className="text-gray-600">The product you're looking for doesn't exist.</p>
+          <button 
+            onClick={() => navigate('/')}
+            className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg"
+          >
+            Browse Products
+          </button>
+        </div>
+        <style>{styles}</style>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -206,13 +278,15 @@ const DecorationsDetailsPage = () => {
                 {/* Thumbnails */}
                 <div className="flex flex-row sm:flex-col gap-4 overflow-x-auto sm:overflow-y-auto sm:max-h-[500px] scrollbar-hide">
                   {[serviceData.featured_image, ...serviceData.other_images].map((src, index) => (
+
+                   <div> 
                     <div
                       key={index}
                       className={`relative size-16 sm:size-20 flex-shrink-0 rounded-lg cursor-pointer transition-all duration-300 border-2 ${mainImage === src ? 'thumbnail-active' : 'border-amber-100'}`}
                       onClick={() => changeImage(src)}
                     >
                       <img
-                        src={getImageUrl(src)}
+                        src={`${API}${src}`}
                         alt={`Thumbnail ${index + 1}`}
                         className="w-full h-full object-cover rounded-md"
                         onError={(e) => {
@@ -220,13 +294,16 @@ const DecorationsDetailsPage = () => {
                         }}
                       />
                     </div>
+
+                  </div>
+                    
                   ))}
                 </div>
 
-                {/* Main Image */}
-                <div className="relative flex-1">
+                 {/* Main Image */}
+                 <div className="relative flex-1">
                   <img
-                    src={getImageUrl(mainImage)}
+                    src={`${API}${mainImage}`}
                     alt={serviceData.name}
                     className="w-full h-auto max-h-[500px] object-contain rounded-xl product-shadow border-2 border-amber-100"
                     onError={(e) => {
@@ -238,7 +315,7 @@ const DecorationsDetailsPage = () => {
                       {serviceData.status === 'new' ? 'NEW!' : 'OFFER!'}
                     </div>
                   )}
-                </div>
+                 </div>
               </div>
 
               <div className="hidden sm:hidden md:block mt-6">

@@ -9,6 +9,7 @@ import { fetchUserData } from "../../redux/userSlice";
 import { applyCoupon } from "../../services/coupon-service/coupon";
 import { useState } from "react";
 import { getCoupon } from "../../services/coupon-service/coupon";
+import {API} from "../../utils/api";
 
 
 // Add this in your main CSS file or at the top of your component
@@ -49,6 +50,7 @@ export default function CheckoutPage() {
   const [couponMessage, setCouponMessage] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [applyOnNextChange, setApplyOnNextChange] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.userData?.data);
 
@@ -121,6 +123,12 @@ const subtotal = parseFloat(cartItems.reduce(
     setIsApplyingCoupon(false);
   }
 };
+useEffect(() => {
+  if (applyOnNextChange && couponCode.trim()) {
+    handleApplyCoupon();
+    setApplyOnNextChange(false); // reset
+  }
+}, [couponCode]);
 
 const handleRemoveCoupon = () => {
   setCouponCode("");
@@ -201,7 +209,8 @@ const [coupons, setCoupons] = useState([]);
                         <div className="flex gap-3">
                           <div className="w-20 h-20 relative rounded-lg overflow-hidden border-2 border-amber-200 shadow-sm">
                             <img
-                              src={"https://a4celebration.com/api/" + item.featured_image}
+                              // src={"https://a4celebration.com/api/" + item.featured_image}
+                              src={`${API_BASE_URL}${item.featured_image}`}
                               alt={item.name}
                               className="object-cover w-full h-full"
                             />
@@ -316,7 +325,12 @@ const [coupons, setCoupons] = useState([]);
       };
 
       return (
-        <div key={c._id} className={`relative p-3 rounded-lg bg-gradient-to-r ${colors.bg} border border-dashed ${!active && 'opacity-70'}`}>
+        <div key={c._id} className={`relative p-3 rounded-lg bg-gradient-to-r ${colors.bg} border border-dashed ${!active && 'opacity-70'}`}  onClick={() => {
+    if (active) {
+      setCouponCode(c.code);        // update state
+      setApplyOnNextChange(true);   // tell useEffect to auto-apply
+    }
+  }}>
           <div className="flex justify-between items-start">
             <div>
               <p className={`font-mono font-bold text-sm ${colors.code}`}>{c.code}</p>

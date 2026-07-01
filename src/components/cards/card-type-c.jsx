@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEvents, removeEvent } from '../../redux/eventManagementSlice';
 import StarRating from '../ratings/StarRating';
+import { API } from "../../utils/api";
 
 const CardTypeC = ({
   title = "Featured Services",
@@ -69,6 +70,8 @@ const CardTypeC = ({
       maximumFractionDigits: 0,
     }).format(price)
   }
+
+  console.log("Bhai KHrab ho gya =>", services)
 
   return (
     <section className="bg-amber-50 md:px-0  px-2 lg:px-0 rashi_wrapper mt-2" id="zodiac_Sign">
@@ -141,47 +144,80 @@ const CardTypeC = ({
                     {/* Fixed Image Section (unchanged) */}
                     <div className="w-full h-48 md:h-56 overflow-hidden flex-shrink-0">
                       <img
-                        src={service.featured_image ? "https://a4celebration.com/api/" + service.featured_image : baseImageUrl}
+                        src={
+                               service.featured_image
+                                 ? `${API}${service.featured_image}`
+                                 : service.image
+                             }
                         alt={service.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
 
                     {/* Fixed Content Section */}
-                    <div className="p-5 text-center flex flex-col h-[200px] "> {/* Fixed height */}
-                      {/* Title with fixed height */}
-                      <h4 className="text-md font-semibold mb-2 line-clamp-2 h-12 overflow-hidden">
-                        {words.length > 4 ? `${words.slice(0, 2).join(" ")}` : service.name}
-                      </h4>
+                  <div className="p-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-auto min-h-[220px] sm:min-h-[220px] w-full">
+  {/* Category badge */}
+  <div className="mb-2 flex items-center">
+    <span
+      className="inline-block px-3 py-1 text-xs font-medium rounded-full  max-w-[95%]"
+      style={{
+        backgroundColor: `${themeColor}20`,
+        color: themeColor,
+      }}
+    >
+      {service.category_name || "Uncategorized"}
+    </span>
+  </div>
 
-                      {/* Rating (fixed space) */}
-                      {showRating && (
-                        <div className="flex justify-center items-center gap-1 mb-2 h-6">
-                          <StarRating product_id={service.product_id} />
-                        </div>
-                      )}
+  {/* Title */}
+  <h4 className="text-sm sm:text-md font-semibold text-gray-800 mb-2 line-clamp-2 leading-snug">
+    {service.name}
+  </h4>
 
-                      {/* Price (fixed space) */}
-                      {showPrice && (
-                        <p className="text-sm font-medium text-gray-700 mb-4 h-6">
-                          {formatPrice(service.price)}
-                        </p>
-                      )}
+  {/* Price */}
+  {showPrice && (
+    <div className="flex items-center mb-2 text-xs sm:text-sm flex-wrap">
+      <span className="font-medium text-gray-700">Starting at</span>
+      <span
+        className="font-bold ml-1"
+        style={{ color: themeColor }}
+      >
+        {formatPrice(service.price)}
+      </span>
+    </div>
+  )}
 
-                      {/* Button pushed to bottom */}
-                      <div className="mt-auto">
-                        <motion.button
-                          className="w-full py-2 px-4 rounded-md uppercase font-medium text-sm tracking-wide text-white transition-colors duration-300 whitespace-nowrap"
-                          style={{ backgroundColor: themeColor }}
-                          whileHover={{
-                            backgroundColor: '#e67300',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                          }}
-                        >
-                          {ctaText}
-                        </motion.button>
-                      </div>
-                    </div>
+  {/* Button pushed to bottom */}
+  <div className="mt-auto">
+    <motion.button
+      className="w-full py-2 px-4 rounded-lg uppercase font-medium text-xs sm:text-sm tracking-wide text-white transition-colors duration-300 flex items-center justify-center"
+      style={{ backgroundColor: themeColor }}
+      whileHover={{
+        backgroundColor: "#e67300",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        scale: 1.02,
+      }}
+      whileTap={{ scale: 0.98 }}
+    >
+      {ctaText}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-3 w-3 sm:h-4 sm:w-4 ml-2"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M14 5l7 7m0 0l-7 7m7-7H3"
+        />
+      </svg>
+    </motion.button>
+  </div>
+</div>
+
                   </motion.div>
                 </Link>
               </SwiperSlide>
@@ -189,6 +225,7 @@ const CardTypeC = ({
           })}
         </Swiper>
       </div>
+
     </section>
   );
 };

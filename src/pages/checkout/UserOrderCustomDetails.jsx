@@ -12,8 +12,21 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { updateRequestStatus } from "../../services/customized-products/customized-api-service";
+import { applyCoupon, getCoupon } from "../../services/coupon-service/coupon";
+import { FaExclamationTriangle } from "react-icons/fa";
 
-export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userData }) => {
+const NotProvidedWarning = () => {
+    return (
+        <div className="inline-flex items-center gap-1 text-red-600 font-medium">
+            <FaExclamationTriangle className="text-red-500" />
+            <span>Not provided</span>
+        </div>
+    );
+};
+
+export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userData, discountAmount = 0, total }) => {
+
+
     const [isOpen2, setIsOpen2] = useState(false);
     const [isOpen1, setIsOpen1] = useState(false);
     const { cart, clearCart } = useCart();
@@ -32,6 +45,13 @@ export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userDat
     const [paymentMethod, setPaymentMethod] = useState(null);
     const [customProductID, setCustomProductID] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    // Coupon states
+    const [couponCode, setCouponCode] = useState("");
+    const [couponApplied, setCouponApplied] = useState(false);
+    const [couponMessage, setCouponMessage] = useState("");
+    const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+    const [coupons, setCoupons] = useState([]);
 
     useEffect(() => {
         if (userData) {
@@ -52,19 +72,87 @@ export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userDat
         }
     }, [cartItems]);
 
-    const transformToOrderSchema = () => {
-        const totalAmount = cartItems.reduce(
-            (sum, item) => sum + (item.final_price * (item.quantity || 1)),
-            0
-        );
+    useEffect(() => {
+        const fetchCoupons = async () => {
+            try {
+                const response = await getCoupon();
+                setCoupons(response);
+            } catch (error) {
+                console.error('Error fetching coupons:', error);
+            }
+        };
+        fetchCoupons();
+    }, []);
 
+    const handleApplyCoupon = async () => {
+        if (!couponCode.trim()) {
+            setCouponMessage("Please enter a coupon code");
+            return;
+        }
+
+        setIsApplyingCoupon(true);
+
+        try {
+            const result = await applyCoupon(couponCode.trim());
+
+            if (result.valid) {
+                // Handle percentage or fixed discount
+                let calculatedDiscount = 0;
+                if (result.discountType === "percentage") {
+                    calculatedDiscount = (subtotal * result.discountValue) / 100;
+                    // Round to 2 decimal places for currency
+                    calculatedDiscount = parseFloat(calculatedDiscount.toFixed(2));
+                } else if (result.discountType === "fixed") {
+                    calculatedDiscount = Math.min(result.discountValue, subtotal); // Ensure discount doesn't exceed total
+                }
+
+                // Ensure total doesn't go negative
+                const newTotal = subtotal - calculatedDiscount;
+                if (newTotal < 0) {
+                    calculatedDiscount = subtotal;
+                }
+
+                setDiscountAmount(calculatedDiscount);
+                setCouponApplied(true);
+                setCouponMessage(result.message || "Coupon applied successfully!");
+            } else {
+                setCouponApplied(false);
+                setDiscountAmount(0);
+                setCouponMessage(result.message || "Invalid coupon code");
+            }
+        } catch (error) {
+            console.error("Coupon application error:", error);
+            setCouponApplied(false);
+            setDiscountAmount(0);
+            setCouponMessage(error.message || "Failed to apply coupon. Please try again.");
+        } finally {
+            setIsApplyingCoupon(false);
+        }
+    };
+
+    const handleRemoveCoupon = () => {
+        setCouponCode("");
+        setCouponApplied(false);
+        setDiscountAmount(0);
+        setCouponMessage("");
+    };
+
+    const subtotal = cartItems.reduce(
+        (sum, item) => sum + (item.final_price * (item.quantity || 1)),
+        0
+    );
+
+    const transformToOrderSchema = () => {
         // Generate delivery notes based on service date/time if available
         const deliveryNotes = [];
+        
         if (cartItems[0]?.service_date && cartItems[0]?.service_time) {
             deliveryNotes.push(`Service requested for ${cartItems[0].service_date} between ${cartItems[0].service_time}`);
         } else {
             deliveryNotes.push('Your order will be delivered in 7 to 10 days');
         }
+
+    
 
         const orderData = {
             userDetails: {
@@ -88,7 +176,9 @@ export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userDat
                 service_time: item.service_time || 'Not Specified'
             })),
             paymentDetails: {
-                totalAmount: totalAmount,
+                subtotal: subtotal,
+                discountAmount: discountAmount,
+                totalAmount: total,
                 transactionId: null,
                 transactionStatus: 'pending',
                 transactionDate: null,
@@ -104,13 +194,13 @@ export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userDat
                     productId: item.product_id,
                     quantity: item.quantity || 1,
                     order_requested_date: item.event_date  || null,
-                    order_requested_time:item.event_date || null,
+                    order_requested_time: item.event_date || null,
                     lastUpdated: new Date()
                 })),
                 lastUpdated: new Date()
             },
             deliveryNotes: deliveryNotes.join('; '),
-            discountApplied: 0,
+            discountApplied: discountAmount,
             shippingMethod: 'Standard Delivery'
         };
 
@@ -174,7 +264,7 @@ export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userDat
 
                 const options = {
                     key: import.meta.env.VITE_RAZORPAY_KEY,
-                    amount: orderData.paymentDetails.totalAmount * 100,
+                    amount: total * 100,
                     currency: "INR",
                     name: "A4 CELEBRATION",
                     description: "Order Payment",
@@ -191,7 +281,7 @@ export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userDat
                                 },
                                 {
                                     headers: {
-                                        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpbmF5IiwiaWF0IjoxNzQ0OTY2MzI0fQ.bHVez4j2ksigzKlm7G3G7OlzrlkgAIwN6cPZySRvdCI'
+                                        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpbmF5IiwiaWF0IjoxNzQ0OTY2MzI4fQ.bHVez4j2ksigzKlm7G3G7OlzrlkgAIwN6cPZySRvdCI'
                                     }
                                 }
                             );
@@ -264,17 +354,17 @@ export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userDat
                             <div className="flex items-center gap-2">
                                 <User className="h-4 w-4 text-amber-600" />
                                 <span className="font-medium">Name:</span>
-                                <span>{username || 'Not provided'}</span>
+                                <span>{username || <NotProvidedWarning />}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Phone className="h-4 w-4 text-amber-600" />
                                 <span className="font-medium">Phone:</span>
-                                <span>{contactNumber || 'Not provided'}</span>
+                                <span>{contactNumber || <NotProvidedWarning />}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Mail className="h-4 w-4 text-amber-600" />
                                 <span className="font-medium">Email:</span>
-                                <span>{email || 'Not provided'}</span>
+                                <span>{email || <NotProvidedWarning />}</span>
                             </div>
                         </div>
                     </div>
@@ -357,7 +447,7 @@ export const UserOrderCustomDetails = ({ cartItems = [], currencySymbol, userDat
                                 <div>
                                     <p className="font-medium">Address</p>
                                     <p className="text-amber-700">
-                                        {aptSuite || 'Not provided'}
+                                        {aptSuite || <NotProvidedWarning />}
                                         {city && `, ${city}`}
                                         {zipCode && `, ${zipCode}`}
                                     </p>

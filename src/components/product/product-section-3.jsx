@@ -1,78 +1,30 @@
 import CardTypeB from '../cards/card-type-b';
-import img1 from '../../assets/artist/Nikhil-600x600.jpg'
+import img1 from '../../assets/artist/nikhil-artist.jpg';
+import { useContext, useEffect } from 'react';
+import ArtistContext from '../../context/ArtistContext';
+import ArtistCardA from '../cards/Artist-card(a)';
+import ArtistCardB from '../cards/Artist-card(a)';
 
 const ProductSection3 = () => {
-  const services = [
-    {
-      id: 1,
-      name: "DJ Arjun",
-      image: img1,
-      price: 150,
-      rating: 4.7,
-      slug: "dj-arjun"
-    },
-    {
-      id: 2,
-      name: "Singer Kavya",
-      image: img1,
-      price: 200,
-      rating: 4.8,
-      slug: "singer-kavya"
-    },
-    {
-      id: 3,
-      name: "Dancer Rahul",
-      image: img1,
-      price: 180,
-      rating: 4.6,
-      slug: "dancer-rahul"
-    },
-    {
-      id: 4,
-      name: "Stand-up Artist Neha",
-      image: img1,
-      price: 220,
-      rating: 4.9,
-      slug: "standup-artist-neha"
-    },
-    {
-      id: 5,
-      name: "Instrumentalist Rishi",
-      image: img1,
-      price: 170,
-      rating: 4.5,
-      slug: "instrumentalist-rishi"
-    },
-    {
-      id: 6,
-      name: "Folk Singer Meera",
-      image: img1,
-      price: 160,
-      rating: 4.4,
-      slug: "folk-singer-meera"
-    },
-    {
-      id: 7,
-      name: "Anchor Varun",
-      image: img1,
-      price: 140,
-      rating: 4.6,
-      slug: "anchor-varun"
-    },
-  ];
-  
+  const { artists, getArtists } = useContext(ArtistContext);
+
+  // Fetch artists on component mount
+  useEffect(() => {
+    getArtists();
+  }, []);
 
   return (
-    <CardTypeB
+    <ArtistCardA
       title="Artist-Management"
       description="Explore our spiritual services"
-      services={services}
-      baseImageUrl={img1}
+      artists={artists}  
+      
       themeColor="#d97706"
       ctaText="Book Now"
       section="Artist Booking"
-    sectionSlug="/artist/service"
+      sectionSlug="/artist/service"
     />
   );
 };
+
 export default ProductSection3;

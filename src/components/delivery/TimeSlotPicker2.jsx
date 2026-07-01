@@ -1,20 +1,29 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { format, addDays } from 'date-fns';
+import { API } from "../../utils/api";
 
 export const TimeSlotPicker2 = ({ onDateSelect }) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [minDate, setMinDate] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const dateInputRef = useRef(null);
+  const token = import.meta.env.VITE_API_KEY;
 
   // Fetch current India time from timeapi.io to set minimum date
   useEffect(() => {
     const fetchCurrentTime = async () => {
       try {
-        const response = await axios.get('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata');
+        const response = await axios.get(`${API}/api/time`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+
+        );
         const { year, month, day } = response.data;
-        
+
         // Create date object from API response (month is 1-12 in the API)
         const currentDate = new Date(year, month - 1, day);
         setMinDate(addDays(currentDate, 1)); // Tomorrow is minimum selectable date

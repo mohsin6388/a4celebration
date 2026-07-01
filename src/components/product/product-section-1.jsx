@@ -14,6 +14,8 @@ const ProductSection1 = () => {
 
   const { products, loading, error } = useSelector((state) => state.products);
 
+  console.log("current work ==> ",products)
+
   // Fetch categories on component mount
   useEffect(() => {
     dispatch(fetchProducts());

@@ -23,6 +23,7 @@ import { getEventByProductId } from "../../services/event-management/events-mana
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Navigate, useNavigate } from "react-router-dom";
+import { API } from "../../utils/api";
 
 import axios from "axios";
 export default function MyOrders({ userData }) {
@@ -47,14 +48,14 @@ const [cancellationReason, setCancellationReason] = useState('');
     if (id.startsWith("PROD-DECORATION")) {
       const product = await getProductById(id);
 
-      return "https://a4celebration.com/api/" + product.data.featured_image;
+      return API + product.data.featured_image;
     }
 
     else if (id.startsWith("PROD-EVENT")) {
 
       const product = await getEventByProductId(id);
 
-      return "https://a4celebration.com/api/" + product.data.featured_image;
+      return API + product.data.featured_image;
 
     }
 
@@ -64,8 +65,7 @@ const [cancellationReason, setCancellationReason] = useState('');
 
       const product = await fetchGiftById(id);
 
-
-      return "https://a4celebration.com/api/" + product.data.featured_image;
+      return API + product.data.featured_image;
 
     }
 

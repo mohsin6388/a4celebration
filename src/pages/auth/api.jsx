@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "https://a4celebration.com/api/api/auth",
+    // baseURL: "https://a4celebration.com/api/api/auth",
+    baseURL: "http://2.25.73.204:3000/api/api/auth",
     // withCredentials: true,
 });
 

@@ -74,27 +74,35 @@ const CompactReviewSlider = ({ product_id }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await createRating(formData);
-      if (response?.status === 1) {
-        toast.success("Review submitted!");
-        setShowForm(false);
-        setFormData({
-          rating: 0,
-          comment: "",
-          isWishlisted: false,
-          product_id: product_id,
-          user_id: localStorage.getItem('userId')
-        });
-      } else {
-        toast.error("Failed to submit review.");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Something went wrong!");
+  e.preventDefault();
+
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    toast.warning("Please login first to submit a review!");
+    return;
+  }
+
+  try {
+    const response = await createRating(formData);
+    if (response?.status === 1) {
+      toast.success("Review submitted!");
+      setShowForm(false);
+      setFormData({
+        rating: 0,
+        comment: "",
+        isWishlisted: false,
+        product_id: product_id,
+        user_id: userId
+      });
+    } else {
+      toast.error("Failed to submit review.");
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong!");
+  }
+};
+
 
   return (
     <div className="max-w-4xl mx-auto px-2 py-4">

@@ -2,9 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import bannerImage from '../../assets/banner/Gift.jpg'
 import { Link } from 'react-router-dom';
+import img2 from '../../assets/banner/mobile/tdvblrkhavq3k5jrv6u0.webp'
 // Image sources for Banner2
 const desktopImg = bannerImage;
-const mobileImg = bannerImage;
+const mobileImg = img2;
 
 const Banner2 = () => {
   return (

@@ -8,6 +8,7 @@ import "swiper/css/pagination"
 import { FaStar, FaStarHalfAlt, FaRegStar, FaHeart, FaArrowRight } from "react-icons/fa"
 import { Autoplay, Pagination } from "swiper/modules"
 import { EyeIcon } from "lucide-react"
+import { API } from "../../utils/api"
 
 
 const RelatedSectionCardB = ({
@@ -128,7 +129,7 @@ const RelatedSectionCardB = ({
                     {/* Image Section */}
                     <div className="relative h-48 overflow-hidden">
                       <img
-                        src={service.featured_image ? "https://a4celebration.com/api/" + service.featured_image : baseImageUrl}
+                        src={`${API}${service.featured_image}`}
                         alt={service.name}
                         className="w-full h-full object-cover"
                       />

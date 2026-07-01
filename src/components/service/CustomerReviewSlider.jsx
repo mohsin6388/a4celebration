@@ -4,61 +4,70 @@ import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import img1 from '../../assets/reviews/WhatsApp Image 2025-09-09 at 3.43.05 PM (2).jpeg'
+import img2 from '../../assets/reviews/WhatsApp Image 2025-09-09 at 3.43.05 PM (1).jpeg'
+
+import img3 from '../../assets/reviews/WhatsApp Image 2025-09-09 at 3.43.05 PM.jpeg'
+import img4 from '../../assets/reviews/WhatsApp Image 2025-09-09 at 3.43.07 PM.jpeg'
+import img5 from '../../assets/reviews/WhatsApp Image 2025-09-09 at 3.51.32 PM.jpeg'
+import img6 from '../../assets/reviews/WhatsApp Image 2025-09-09 at 3.53.26 PM.jpeg'
+import img7 from '../../assets/reviews/WhatsApp Image 2025-09-09 at 3.54.33 PM.jpeg'
+import img8 from '../../assets/reviews/WhatsApp Image 2025-09-09 at 3.55.20 PM.jpeg'
 
 const reviews = [
   {
-    name: "Alice Johnson",
+    name: "Akriti Yadav",
     review: "Absolutely loved the service! Highly recommended.Loved the experience, highly recommendedLoved the experience, highly recommended",
     rating: 4.5,
-    image: "https://randomuser.me/api/portraits/women/1.jpg"
+    image: img1
   },
   {
-    name: "Michael Smith",
-    review: "Great experience. Very professional staff.Loved the experience, highly recommendedLoved the experience, highly recommended",
+    name: "Mohit",
+    review: "Great experience. Very professional staff and everyone was so polite. Loved the experience, Overall i will highly recommend & Loved the experience, highly recommended",
     rating: 5,
-    image: "https://randomuser.me/api/portraits/men/2.jpg"
+    image: img2
   },
   {
-    name: "Emma Brown",
+    name: "Vaishnavi Sharma",
     review: "Service was good but can improve on punctuality.Loved the experience, highly recommendedLoved the experience, highly recommended",
-    rating: 3.5,
-    image: "https://randomuser.me/api/portraits/women/3.jpg"
+    rating: 4,
+    image: img3
   },
   {
-    name: "David Lee",
+    name: "Anukalp",
     review: "Fantastic customer care. Will come back again!Loved the experience, highly recommendedLoved the experience, highly recommended",
     rating: 4,
-    image: "https://randomuser.me/api/portraits/men/4.jpg"
+    image: img6
   },
   {
-    name: "Sophia Williams",
+    name: "Sameer Verma",
     review: "Everything went smoothly, great service.Loved the experience, highly recommendedLoved the experience, highly recommended",
     rating: 4.5,
-    image: "https://randomuser.me/api/portraits/women/5.jpg"
+    image: img7
   },
   {
-    name: "Chris Martin",
+    name: "Sandeep",
     review: "Very satisfied with the professionalism.Loved the experience, highly recommendedLoved the experience, highly recommended",
     rating: 5,
     image: "https://randomuser.me/api/portraits/men/6.jpg"
   },
   {
-    name: "Lily Evans",
+    name: "Rohini Katiyar",
     review: "Good support and easy process.Loved the experience, highly recommendedLoved the experience, highly recommended",
     rating: 4,
-    image: "https://randomuser.me/api/portraits/women/7.jpg"
+    image: img5
   },
   {
-    name: "James Carter",
+    name: "Aryan Sharma",
     review: "Could improve the delivery time.Loved the experience, highly recommendedLoved the experience, highly recommended",
-    rating: 3,
-    image: "https://randomuser.me/api/portraits/men/8.jpg"
+    rating: 4,
+    image: img8
   },
   {
-    name: "Isabella Moore",
+    name: "Jia Rehman",
     review: "Loved the experience, highly recommendedLoved the experience, highly recommendedLoved the experience, highly recommended!",
     rating: 4.5,
-    image: "https://randomuser.me/api/portraits/women/9.jpg"
+    image: img4
   }
 ];
 

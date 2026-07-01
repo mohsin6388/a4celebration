@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Share2, Phone, Clock, ChevronLeft, ChevronRight, Check, Gift, PhoneCall, ShoppingCart, Sparkles } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../hooks/cartHook";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,39 +14,77 @@ import useUserCartData from '../../hooks/useUserCartData';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { useCustomModalData } from "../../context/CustomModalContext";
 import MetaTags from "../../components/SEO/MetaTags";
-
-
+import { getEventProductBySlug } from "../../services/event-management/events-management-api-service";
+import { API } from "../../utils/api";
 
 const EventManagementDetailsPage = () => {
-  const location = useLocation();
+  const { slug } = useParams();
   const navigate = useNavigate();
-  const { userData } = useSelector((state) => state.user);
+ const { userData } = useSelector((state) => state.user);
   const { cartItems: initialCartItems, isLoading: isCartLoading } = useUserCartData();
-  const { addToCart, updateItem,clearCart } = useCart();
+  const { addToCart, updateItem, clearCart } = useCart();
   const { setCustomModalData } = useCustomModalData();
 
-  const { serviceData, sectionData } = location.state;
+  const [serviceData, setServiceData] = useState(null);
+  const [sectionData, setSectionData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [dateTime, setDateTime] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
   const [existingCartItem, setExistingCartItem] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 11,
+    minutes: 27,
+    seconds: 33,
+  });
+
+  // Fetch event product data by slug
+  useEffect(() => {
+    const fetchEventProduct = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getEventProductBySlug(slug);
+        setServiceData(response.data);
+        setSectionData(response.sectionData || {}); // Adjust based on your API response
+        
+        // Set timeLeft based on offer_ends_in if available
+        if (response.data.offer_ends_in) {
+          setTimeLeft(prev => ({
+            ...prev,
+            days: parseInt(response.data.offer_ends_in) || 0
+          }));
+        }
+      } catch (err) {
+        console.error('Error fetching event product:', err);
+        setError(err.response?.data?.message || 'Failed to load event product');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) {
+      fetchEventProduct();
+    }
+  }, [slug]);
 
   // Check if item is already in cart
   useEffect(() => {
-    if (!isCartLoading && initialCartItems) {
+    if (!isCartLoading && initialCartItems && serviceData) {
       const foundItem = initialCartItems.find(
         item => item.product_id === serviceData.product_id
       );
       if (foundItem) {
         setIsInCart(true);
         setExistingCartItem(foundItem);
-        // Set initial date/time from cart if available
-
       }
     }
-  }, [initialCartItems, isCartLoading, serviceData.product_id]);
+  }, [initialCartItems, isCartLoading, serviceData]);
 
   const handleOpen = () => {
     if (!serviceData || !userData?.data) {
@@ -67,22 +105,14 @@ const EventManagementDetailsPage = () => {
 
     setShowModal(true);
   };
+  
   const handleClose = () => setShowModal(false);
 
-  // Use serviceData for dynamic content
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [timeLeft, setTimeLeft] = useState({
-    days: parseInt(serviceData?.offer_ends_in) || 0,
-    hours: 11,
-    minutes: 27,
-    seconds: 33,
-  })
-
   // Prepare images array - combine featured image with other_images
-  const images = [
+  const images = serviceData ? [
     serviceData.featured_image,
     ...(serviceData.other_images || [])
-  ].filter(img => img); // Remove any undefined/null images
+  ].filter(img => img) : [];
 
   const [productId, setProductId] = useState('');
 
@@ -94,24 +124,7 @@ const EventManagementDetailsPage = () => {
   }, []);
 
   // Countdown timer
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 }
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
-        } else if (prev.days > 0) {
-          return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 }
-        }
-        return prev
-      })
-    }, 1000)
 
-    return () => clearInterval(timer)
-  }, [])
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length)
@@ -122,18 +135,18 @@ const EventManagementDetailsPage = () => {
   }
 
   // Convert package_includes object to array format
-  const packageIncludes = serviceData.package_includes ?
+  const packageIncludes = serviceData?.package_includes ?
     Object.entries(serviceData.package_includes).map(([name, included]) => ({
       name: name.charAt(0).toUpperCase() + name.slice(1).replace('_', ' '),
       included
     })) : [];
 
   // Format price with Indian rupee symbol and commas
-  const formattedPrice = new Intl.NumberFormat('en-IN', {
+  const formattedPrice = serviceData ? new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0
-  }).format(serviceData.price || 0).replace('₹', '₹ ');
+  }).format(serviceData.price || 0).replace('₹', '₹ ') : '₹ 0';
 
   const decodeHTML = (html) => {
     const txt = document.createElement('textarea');
@@ -147,6 +160,7 @@ const EventManagementDetailsPage = () => {
   }, [generateProductId]);
 
   const handleBookNow = async () => {
+    if (!serviceData) return;
 
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userId = localStorage.getItem('userId');
@@ -193,9 +207,7 @@ const EventManagementDetailsPage = () => {
         );
         toast.success('Cart details updated!');
       } else {
-
-
-          await clearCart(userId)
+        await clearCart(userId)
         // Add new item
         await addToCart({
           userID: userData?.data?._id,
@@ -216,16 +228,55 @@ const EventManagementDetailsPage = () => {
   };
 
   // Image handling with fallback
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return '/images/placeholder-product.jpg';
-    return imagePath.startsWith('http') ? imagePath : `https://a4celebration.com/api/${imagePath}`;
-  };
+  // const getImageUrl = (imagePath) => {
+  //   if (!imagePath) return '/images/placeholder-product.jpg';
+  //   return imagePath.startsWith('http') ? imagePath : `https://a4celebration.com/api/${imagePath}`;
+  // };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
-  useEffect(() => {
-  console.log('Component rendered');
-  return () => console.log('Component unmounted');
-}, []);
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Event</h2>
+          <p className="text-gray-600">{error}</p>
+          <button 
+            onClick={() => navigate(-1)}
+            className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show event not found state
+  if (!serviceData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Event Not Found</h2>
+          <p className="text-gray-600">The event you're looking for doesn't exist.</p>
+          <button 
+            onClick={() => navigate('/events')}
+            className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg"
+          >
+            Browse Events
+          </button>
+        </div>
+      </div>
+    );
+  }
 
 
 
@@ -253,7 +304,7 @@ const EventManagementDetailsPage = () => {
             <div className="relative rounded-2xl overflow-hidden mb-8 shadow-lg group">
               <div className="aspect-[4/3] relative">
                 <img
-                  src={"https://a4celebration.com/api/" + images[currentImageIndex] || "/placeholder.svg"}
+                  src={`${API}/${images[currentImageIndex]}`}
                   alt={serviceData.name || "Event Venue"}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -491,8 +542,8 @@ const EventManagementDetailsPage = () => {
                           <span className="font-medium text-black">Offer Ends In</span>
                         </div>
                         <div className="text-red-500 font-medium">
-                          {timeLeft.days} Days, {String(timeLeft.hours).padStart(2, "0")}:
-                          {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+                          {timeLeft.days} Days
+                       
                         </div>
                       </div>
                     </div>
@@ -562,7 +613,7 @@ const EventManagementDetailsPage = () => {
                             <ShoppingCart size={20} />
                             <span className="font-medium text-sm">Book Now</span>
                           </>
-                        )}z
+                        )}
                       </button>
                     )}
 
@@ -659,7 +710,7 @@ const EventManagementDetailsPage = () => {
                   __html: decodeHTML(serviceData.description || 'No description available')
                 }}
               />
-              {console.log(serviceData.description)}
+            
 
               {/* Expandable Content */}
               <div className="mt-4">
@@ -1104,6 +1155,8 @@ const EventManagementDetailsPage = () => {
                   </button>
 
                   {showModal && (
+
+                    
                     <CustomRequestModal
                       productId={productId}  // replace with actual productId if needed
                       userId={userData?.data?._id}      // replace with actual userId if needed
@@ -1115,37 +1168,7 @@ const EventManagementDetailsPage = () => {
               </div>
 
               {/* Special Offer */}
-              <div className="p-4 bg-gradient-to-r from-[#222222] to-black text-white">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-[#FFD700] flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="black"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                      <path d="M2 17l10 5 10-5"></path>
-                      <path d="M2 12l10 5 10-5"></path>
-                    </svg>
-                  </div>
-                  <h3 className="font-bold text-base">Special Offer</h3>
-                </div>
-                <p className="text-gray-300 mb-3 text-xs">
-                  Book now and get a complimentary couple's photoshoot at the Taj Mahal!
-                </p>
-                <div className="flex justify-between items-center">
-                  <div className="text-xs text-gray-300">
-                    Use code: <span className="font-bold text-[#FFD700]">WEDDING2023</span>
-                  </div>
-                  <button className="text-[#FFD700] font-medium text-xs hover:underline">Copy Code</button>
-                </div>
-              </div>
+              
             </div>
           </div>
         </div>

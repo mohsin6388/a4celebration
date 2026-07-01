@@ -7,6 +7,8 @@ const ProductSection2 = () => {
   const selectedCity = useSelector((state) => state.location.currentLocation); 
   const { giftList, giftLoading, giftError, fetchGifts } = useGiftHook();
 
+  console.log("gift ki details", giftList)
+
   useEffect(() => {
     fetchGifts();
   }, [selectedCity]);

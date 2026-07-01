@@ -28,10 +28,8 @@ const RelatedSectionCardC = ({
     const halfStar = rating % 1 !== 0;
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
-
     const dispatch = useDispatch();
     const { events, loading, error } = useSelector((state) => state.events);
-
 
     useEffect(() => {
       dispatch(fetchEvents());
@@ -61,6 +59,7 @@ const RelatedSectionCardC = ({
       },
     },
   };
+  
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -70,29 +69,26 @@ const RelatedSectionCardC = ({
   }
 
   return (
-    <section className="bg-white md:px-0  px-2 lg:px-0 rashi_wrapper mt-2" id="zodiac_Sign">
-      <div className="container-fluid  md:px-6 px-3 lg:px-6">
+    <section className=" md:px-0 px-2 lg:px-0 rashi_wrapper mt-2" id="zodiac_Sign">
+      <div className="container-fluid md:px-6 px-3 lg:px-6">
         <div className="heading_wrapper mb-6">
           <div className="my-12 mb-4">
-            <div>
-              <div className="text-[rgb(94,15,77)]">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-inherit text-2xl sm:text-3xl font-bold">
-                    {section}
-                  </h2>
+            <div className="text-[rgb(94,15,77)]">
+              <div className="flex flex-wrap justify-between items-center gap-2">
+                <h2 className="text-inherit text-2xl sm:text-3xl font-bold min-w-[50%] flex-1">
+                  {section}
+                </h2>
 
-                  {(sectionSlug && section) && (
-                    <Link
-                      to={title.toLowerCase()}
-                      className="flex items-center gap-2 text-amber-600 hover:text-amber-800 cursor-pointer text-sm sm:text-base font-medium"
-                    >
-                      <span>View All</span>
-                      <EyeIcon className="h-5 w-5" />
-                    </Link>
-                  )}
-                </div>
+                {(sectionSlug && section) && (
+                  <Link
+                    to={title.toLowerCase()}
+                    className="flex items-center gap-2 text-amber-600 hover:text-amber-800 cursor-pointer text-sm sm:text-base font-medium whitespace-nowrap"
+                  >
+                    <span>View All</span>
+                    <EyeIcon className="h-5 w-5" />
+                  </Link>
+                )}
               </div>
-
             </div>
           </div>
         </div>
@@ -105,7 +101,6 @@ const RelatedSectionCardC = ({
           }}
           spaceBetween={30}
           slidesPerView={4}
-
           breakpoints={{
             320: {
               slidesPerView: 2,
@@ -129,59 +124,91 @@ const RelatedSectionCardC = ({
             const words = service.name.split(" ");
             return (
               <SwiperSlide key={index}>
-
-                <Link to={`${sectionSlug}/${service.
-                  slug_url} `} className="block h-full" state={{
+                <Link 
+                  to={`${sectionSlug}/${service.slug_url}`} 
+                  className="block h-full" 
+                  state={{
                     serviceData: service,
                     sectionData: section
-                  }}>
+                  }}
+                >
                   <motion.div
-                    className="h-full bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                    className="h-full bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col"
                     style={{ borderBottom: `3px solid ${themeColor}` }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
                     {/* Fixed Image Section */}
-                    <div className="w-full h-48 md:h-56 overflow-hidden"> {/* Set fixed height */}
+                    <div className="w-full h-48 md:h-56 overflow-hidden flex-shrink-0">
                       <img
-                        src={service.featured_image ? "https://a4celebration.com/api/" + service.featured_image : baseImageUrl}
+                      src={service.featured_image ? `${API}${service.featured_image}` : baseImageUrl}
                         alt={service.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
 
-                    {/* Content Section remains same */}
-                    {/* Content Section */}
-                    <div className="sign_box_cont p-5 text-center h-[200px] ">
-                      <h4 className="text-md font-medium mb-1 font-semibold mb-2 line-clamp-2">
-                        {words.length > 4 ? `${words.slice(0, 2).join(" ")}` : service.name}
+                    {/* Updated Content Section to match CardTypeC */}
+                    <div className="p-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-auto min-h-[220px] sm:min-h-[220px] w-full">
+                      {/* Category badge */}
+                      <div className="mb-2 flex items-center">
+                        <span
+                          className="inline-block px-3 py-1 text-xs font-medium rounded-full max-w-[95%]"
+                          style={{
+                            backgroundColor: `${themeColor}20`,
+                            color: themeColor,
+                          }}
+                        >
+                          {service.category_name || "Uncategorized"}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h4 className="text-sm sm:text-md font-semibold text-gray-800 mb-2 line-clamp-2 leading-snug">
+                        {service.name}
                       </h4>
 
-                      {showRating && (
-                        <div className="flex justify-center items-center gap-1 mb-2">
-                          {renderStars(service.rating || 0)}
-                          <span className="text-xs text-gray-500 ml-1">
-                            ({service.rating?.toFixed(1) || '0.0'})
+                   
+
+                      {/* Price */}
+                      {showPrice && (
+                        <div className="flex items-center mb-2 text-xs sm:text-sm flex-wrap">
+                          <span className="font-medium text-gray-700">Starting at</span>
+                          <span
+                            className="font-bold ml-1"
+                            style={{ color: themeColor }}
+                          >
+                            {formatPrice(service.price)}
                           </span>
                         </div>
                       )}
 
-                      {showPrice && (
-                        <p className="text-sm font-medium text-gray-700 mb-4">
-                          {formatPrice(service.price)}
-                        </p>
-                      )}
-
-                      <div className="mt-4">
+                      {/* Button pushed to bottom */}
+                      <div className="mt-auto">
                         <motion.button
-                          className="w-full py-2 px-4 rounded-md uppercase font-medium text-sm tracking-wide text-white transition-colors duration-300 whitespace-nowrap"
+                          className="w-full py-2 px-4 rounded-lg uppercase font-medium text-xs sm:text-sm tracking-wide text-white transition-colors duration-300 flex items-center justify-center"
                           style={{ backgroundColor: themeColor }}
                           whileHover={{
-                            backgroundColor: '#e67300',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                            backgroundColor: "#e67300",
+                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                            scale: 1.02,
                           }}
+                          whileTap={{ scale: 0.98 }}
                         >
                           {ctaText}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 sm:h-4 sm:w-4 ml-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M14 5l7 7m0 0l-7 7m7-7H3"
+                            />
+                          </svg>
                         </motion.button>
                       </div>
                     </div>

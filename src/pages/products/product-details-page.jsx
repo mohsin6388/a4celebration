@@ -5,6 +5,7 @@ import PincodeDeliveryChecker from '../../components/delivery/Delivery-date';
 import ProductOverview from '../../components/product/ProductOverview';
 import RelatedProductSection1 from '../../components/related-products-feed/related-product-section-1';
 import { useLocation } from 'react-router-dom';
+import { API } from '../../utils/api';
 
 // Add this in your main CSS file or at the top of your component
 const styles = `
@@ -42,13 +43,12 @@ const ProductDetailsPage = () => {
   const { serviceData, sectionData } = location.state;
 
   const [mainImage, setMainImage] = useState(
-    "https://a4celebration.com/api/" + serviceData.featured_image
-
+    `${API}api/${serviceData.featured_image}`
   );
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   const changeImage = (src) => {
-    setMainImage("https://a4celebration.com/api/" + src);
+    setMainImage(`${API}api/${src}`);
   };
 
   return (
@@ -81,11 +81,12 @@ const ProductDetailsPage = () => {
                 {serviceData.other_images.map((src, index) => (
                   <div
                     key={index}
-                    className={`relative size-16 sm:size-20 rounded-lg cursor-pointer transition-all duration-300 border-2 ${mainImage === src ? 'border-amber-500 scale-105' : 'border-amber-100'}`}
+                    className={`relative size-16 sm:size-20 rounded-lg cursor-pointer transition-all duration-300 border-2 ${mainImage === src ? "border-amber-500 scale-105" : "border-amber-100"}`}
                     onClick={() => changeImage(src)}
                   >
                     <img
-                      src={"https://a4celebration.com/api/" + src}
+                      // src={"https://a4celebration.com/api/" + src}
+                      src={`${API}api/${src}`}
                       alt={`Thumbnail ${index + 1}`}
                       className="w-full h-full object-cover rounded-md"
                     />
@@ -102,15 +103,15 @@ const ProductDetailsPage = () => {
 
             {/* Product Details */}
             <div className="w-full md:w-1/2 px-4">
-              <h2 className="text-3xl font-bold mb-2 font-playfair text-amber-800">{serviceData.name}
-
-
-
+              <h2 className="text-3xl font-bold mb-2 font-playfair text-amber-800">
+                {serviceData.name}
               </h2>
               <p className="text-amber-600 mb-4">SKU: WH1000XM4</p>
 
               <div className="mb-4 flex items-center">
-                <span className="text-3xl font-bold text-amber-700 mr-2">$349.99</span>
+                <span className="text-3xl font-bold text-amber-700 mr-2">
+                  $349.99
+                </span>
                 <span className="text-gray-500 line-through">$399.99</span>
                 <span className="ml-3 bg-amber-100 text-amber-800 text-sm font-medium px-2 py-1 rounded-full">
                   Save 12% ✨
@@ -121,7 +122,7 @@ const ProductDetailsPage = () => {
                 {[...Array(5)].map((_, index) => (
                   <Star
                     key={index}
-                    className={`${index < 4 ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`}
+                    className={`${index < 4 ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`}
                     size={20}
                   />
                 ))}
@@ -129,14 +130,16 @@ const ProductDetailsPage = () => {
               </div>
 
               <p className="text-gray-700 mb-6 border-l-4 border-amber-300 pl-4 py-2 bg-amber-50 rounded-r-lg">
-                Experience premium sound quality and industry-leading noise cancellation with these wireless
-                headphones. Perfect for music lovers and frequent travelers. 🎧✨
+                Experience premium sound quality and industry-leading noise
+                cancellation with these wireless headphones. Perfect for music
+                lovers and frequent travelers. 🎧✨
               </p>
 
-
-
               <div className="mb-6 p-4 bg-amber-50 rounded-xl border-2 border-amber-100">
-                <label htmlFor="quantity" className="block text-sm font-medium text-amber-800 mb-1">
+                <label
+                  htmlFor="quantity"
+                  className="block text-sm font-medium text-amber-800 mb-1"
+                >
                   Quantity:
                 </label>
                 <div className="flex items-center">
@@ -148,7 +151,9 @@ const ProductDetailsPage = () => {
                     defaultValue="1"
                     className="w-16 text-center rounded-lg border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none py-2"
                   />
-                  <span className="ml-3 text-sm text-gray-600">Only 5 left in stock!</span>
+                  <span className="ml-3 text-sm text-gray-600">
+                    Only 5 left in stock!
+                  </span>
                 </div>
               </div>
 
@@ -158,12 +163,14 @@ const ProductDetailsPage = () => {
                   Add to Cart
                 </button>
                 <button
-                  className={`flex gap-2 items-center px-6 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 transition-all border-2 ${isWishlisted ? 'bg-amber-50 border-amber-500 text-amber-600' : 'border-amber-200 text-gray-800 hover:border-amber-300'}`}
+                  className={`flex gap-2 items-center px-6 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 transition-all border-2 ${isWishlisted ? "bg-amber-50 border-amber-500 text-amber-600" : "border-amber-200 text-gray-800 hover:border-amber-300"}`}
                   onClick={() => setIsWishlisted(!isWishlisted)}
                 >
                   <Heart
                     size={20}
-                    className={isWishlisted ? 'fill-amber-600 text-amber-600' : ''}
+                    className={
+                      isWishlisted ? "fill-amber-600 text-amber-600" : ""
+                    }
                   />
                   Wishlist
                 </button>
@@ -172,10 +179,13 @@ const ProductDetailsPage = () => {
               <div className="mb-6 p-4 bg-white rounded-xl border-2 border-amber-100 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="text-amber-500" size={18} />
-                  <h3 className="font-semibold text-amber-800">Celebration Special!</h3>
+                  <h3 className="font-semibold text-amber-800">
+                    Celebration Special!
+                  </h3>
                 </div>
                 <p className="text-sm text-gray-700">
-                  Free gift wrapping and personalized message included with every order this season! 🎁
+                  Free gift wrapping and personalized message included with
+                  every order this season! 🎁
                 </p>
               </div>
 
@@ -185,7 +195,6 @@ const ProductDetailsPage = () => {
                 <div className="block md:hidden">
                   <ProductOverview />
                 </div>
-
               </div>
             </div>
           </div>
@@ -195,7 +204,6 @@ const ProductDetailsPage = () => {
               Related Products
             </span>
           </h2>
-
 
           <div className="space-y-6">
             <RelatedProductSection1 />

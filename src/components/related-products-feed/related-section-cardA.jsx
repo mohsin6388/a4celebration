@@ -6,6 +6,7 @@ import 'swiper/swiper-bundle.css';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import { Autoplay, Pagination } from 'swiper/modules';
 import { EyeIcon } from 'lucide-react';
+import { API } from "../../utils/api";
 
 const RelatedSectionCardA = ({
   services = [],
@@ -128,7 +129,8 @@ const RelatedSectionCardA = ({
                     {/* Image Section - Fixed Height */}
                     <div className="sign_box_img flex justify-center mb-2 h-40">
                       <img
-                        src={service.featured_image ? "https://a4celebration.com/api/" + service.featured_image : baseImageUrl}
+                        // src={service.featured_image ? `${API}api/${service.featured_image}` : baseImageUrl}
+                        src={`${API}${service.featured_image}`}
                         alt={service.name}
                         className="object-cover rounded-lg w-full h-full"
                       />

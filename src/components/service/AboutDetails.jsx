@@ -4,7 +4,7 @@ import img1 from '../../assets/services/1727611247_original (1).avif';
 import { Link } from "react-router-dom";
 
 export default function AboutDetails() {
-  const cities = ["Kanpur", "Noida", "Delhi", "Mumbai", "Pune"];
+  const cities = ["Kanpur", "Noida", "Delhi","Gurugram"];
   const [currentCity, setCurrentCity] = useState("");
   const [index, setIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -38,7 +38,7 @@ export default function AboutDetails() {
             <span className="bg-gradient-to-r from-amber-500 to-amber-700 text-white p-2 rounded-lg mr-2">
               <Phone size={24} />
             </span>
-            CelebrationHub
+           A4Celebration
           </div>
         </header>
 
@@ -57,7 +57,7 @@ export default function AboutDetails() {
 
             <div className="text-gray-600 space-y-4">
               <p className="text-lg">
-                CelebrationHub is your premier platform for booking professional event services.
+                A4Celebration is your premier platform for booking professional event services.
                 We bring together the best decorators, caterers, and entertainers to make your events magical.
               </p>
 
@@ -83,7 +83,7 @@ export default function AboutDetails() {
   </button>
 </Link>
 
-             <Link to="/contact">
+             <Link to="/decorations">
   <button className="border-2 border-amber-600 flex items-center justify-center hover:bg-amber-50 text-amber-700 px-6 py-3 rounded-lg text-lg font-medium transition-all">
     Learn More
   </button>
@@ -96,7 +96,7 @@ export default function AboutDetails() {
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="text-amber-400 fill-amber-400 w-5 h-5" />
                 ))}
-                <span className="ml-2 text-gray-700 font-medium">4.8/5 (980+ reviews)</span>
+                <span className="ml-2 text-gray-700 font-medium">4.8/5 (150+ reviews)</span>
               </div>
               <p className="text-gray-600 italic">
                 "CelebrationHub transformed our wedding into a fairy tale. Their decor team was amazing
@@ -114,11 +114,11 @@ export default function AboutDetails() {
               className="w-full h-auto object-contain rounded-xl shadow-lg border-4 border-amber-200"
             />
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-md border border-amber-100 text-center">
-              <div className="text-3xl font-bold text-amber-600 font-playfair">500+</div>
+              <div className="text-3xl font-bold text-amber-600 font-playfair">70+</div>
               <div className="text-gray-600">Event Professionals</div>
             </div>
             <div className="absolute -top-6 -right-6 bg-gradient-to-r from-amber-500 to-amber-700 text-white p-4 rounded-xl shadow-md text-center">
-              <div className="text-3xl font-bold font-playfair">15</div>
+              <div className="text-3xl font-bold font-playfair">3</div>
               <div>Cities Served</div>
             </div>
           </div>

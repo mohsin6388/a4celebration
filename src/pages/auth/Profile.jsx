@@ -12,35 +12,40 @@ import MyOrders from "./myOrder";
 import MyCustomOrders from "./MyCustomOrders";
 import { User, Mail, Phone, Shield, LogIn, Home, MapPin, Globe, Hash, Flag, Calendar, VenusAndMars } from 'lucide-react';
 import MyCustomConfirmedOrders from "./MyCustomConfirmedOrders";
+import MyArtistOrders from "./MyArtistOrders";
+import { API } from "../../utils/api";
 Modal.setAppElement('#root')
 
 
-
-// import React, { useState, useEffect } from "react";
-// import Modal from "react-modal";
-// import { useDispatch, useSelector } from "react-redux";
-// import { updateUser } from "../../services/auth/auth";
-// import { logout } from "../../redux/userSlice";
-// import { useNavigate } from 'react-router-dom';
-// import { toast, ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import { fetchUserData } from "../../redux/userSlice";
-
-// Modal.setAppElement('#root');
-
 const EditProfileModal = ({ isOpen, onRequestClose, userData, onSuccess }) => {
   const [formData, setFormData] = useState({
-    username: userData?.username || "",
-    email: userData?.email || "",
-    mobile: userData?.mobile || "",
-    address: userData?.address || "",
-    city: userData?.city || "",
-    country: userData?.country || "",
-    pincode: userData?.pincode || "",
-    landmark: userData?.landmark || "",
-    gender: userData?.gender || "",
-    profile_image: userData?.profile_image || "",
+    username: "",
+    email: "",
+    mobile: "",
+    address: "",
+    city: "",
+    country: "",
+    pincode: "",
+    landmark: "",
+    gender: "",
+    profile_image: "",
   });
+    useEffect(() => {
+    if (userData) {
+      setFormData({
+        username: userData.username || "",
+        email: userData.email || "",
+        mobile: userData.mobile || "",
+        address: userData.address || "",
+        city: userData.city || "",
+        country: userData.country || "",
+        pincode: userData.pincode || "",
+        landmark: userData.landmark || "",
+        gender: userData.gender || "",
+        profile_image: userData.profile_image || "",
+      });
+    }
+  }, [userData, isOpen]); // Also reset when modal opens
 
   const [inputWarnings, setInputWarnings] = useState({
     username: "",
@@ -444,7 +449,7 @@ const Profile = () => {
                     user?.profile_image
                       ? user?.social_type === "google"
                         ? user.profile_image
-                        : "https://a4celebration.com/api/" + user.profile_image.replace(/\\/g, '/')
+                        : `${API}api/${user.profile_image.replace(/\\/g, '/')}`
                       : "https://png.pngtree.com/png-clipart/20231019/original/pngtree-user-profile-avatar-png-image_13369990.png"
                   }
                 />
@@ -518,6 +523,15 @@ const Profile = () => {
     onClick={() => setActiveTab('accordion4')}
   >
     My Custom Orders
+  </button>
+   <button
+    className={`px-2 py-1 rounded-lg text-xs sm:text-sm border transition-all duration-200 ${activeTab === 'accordion5'
+      ? 'bg-black text-white border-black'
+      : 'bg-white text-black border-gray-300'
+    }`}
+    onClick={() => setActiveTab('accordion5')}
+  >
+    My Artist Requests
   </button>
 </div>
           </div>
@@ -718,6 +732,19 @@ const Profile = () => {
               </div>
             </div>
           )}
+
+
+           {activeTab === 'accordion5' && (
+            <div className="animate-nk-acc-tab block space-y-12 px-4">
+
+
+
+              <div id="accOverview" className="animate-nk-acc-tab block space-y-12 px-4">
+               <MyArtistOrders userData={userData}></MyArtistOrders>
+              </div>
+            </div>
+          )}
+          
         </div>
       </div>
 

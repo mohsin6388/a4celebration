@@ -565,27 +565,7 @@ export const UserOrderDetails = ({ cartItems = [], currencySymbol, userData, dis
                         </label>
                     </div>
 
-                    {/* UPI Option */}
-                    <div className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:border-amber-300 transition-colors">
-                        <input
-                            type="radio"
-                            id="upi"
-                            name="payment"
-                            value="upi"
-                            checked={paymentMethod === "upi"}
-                            onChange={() => setPaymentMethod("upi")}
-                            className="text-amber-600 border-2 border-amber-300 focus:ring-amber-200"
-                        />
-                        <label htmlFor="upi" className="flex items-center space-x-3 cursor-pointer w-full">
-                            <div className="bg-purple-50 p-2 rounded-lg">
-                                <img src={Upi} style={{ width: '100px' }} className="w-8 h-8" />
-                            </div>
-                            <div>
-                                <p className="font-medium text-gray-800">UPI</p>
-                                <p className="text-sm text-gray-500"> Google Pay, PhonePe, Paytm, BHIM</p>
-                            </div>
-                        </label>
-                    </div>
+                    
 
                     {/* Cash on Delivery Option */}
                     <div className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:border-amber-300 transition-colors">

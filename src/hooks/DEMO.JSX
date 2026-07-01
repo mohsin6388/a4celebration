@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import RazorPayIcon from '../../assets/payment/razorpay-icon (1).svg';
 import Upi from '../../assets/payment/upi.svg';
 import Cod from '../../assets/payment/reshot-icon-cash-on-delivery-5UB8T6KGXR.svg';
-import { useCart } from '../../hooks/cartHook';
-import { placeOrder } from "../../services/decoration-orders/order-api";
+import { useCart } from './cartHook';
+import { placeOrder } from "../services/decoration-orders/order-api";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -615,11 +615,12 @@ export const UserOrderDetails = ({ cartItems = [], currencySymbol, userData, dis
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Gift, NotebookIcon as Lotus, Info, Calendar, Clock, MapPin, Sparkles, PartyPopper, Heart } from "lucide-react";
-import { UserOrderDetails } from "./UserOrderDetails";
+import { UserOrderDetails } from "../pages/checkout/UserOrderDetails";
 import { useDispatch, useSelector } from "react-redux";
-import useUserCartData from "../../hooks/useUserCartData";
-import { fetchUserData } from "../../redux/userSlice";
-import { applyCoupon } from "../../services/coupon-service/coupon";
+import useUserCartData from "./useUserCartData";
+import { fetchUserData } from "../redux/userSlice";
+import { applyCoupon } from "../services/coupon-service/coupon";
+import { API } from "../utils/api"
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
@@ -763,7 +764,7 @@ export default function CheckoutPage() {
                         <div className="flex gap-3">
                           <div className="w-20 h-20 relative rounded-lg overflow-hidden border-2 border-amber-200 shadow-sm">
                             <img
-                              src={"https://a4celebration.com/api/" + item.featured_image}
+                              src={`${API}api/${item.featured_image}`}
                               alt={item.name}
                               className="object-cover w-full h-full"
                             />

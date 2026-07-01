@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API } from '../../utils/api';
 
-const API_URL = 'https://a4celebration.com/api/api/';
+const API_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 export const getAllEvents = async () => {
@@ -11,11 +12,13 @@ export const getAllEvents = async () => {
         'Content-Type': 'application/json',
       },
     });
-    const activeProducts = response.data.data.filter(product => product.status === "active");
-  
- 
-  return activeProducts;
-  } catch (error) {z
+    const activeProducts = response.data.data.filter(
+      (product) => product.status === 'active',
+    );
+
+    return activeProducts;
+  } catch (error) {
+    z;
     console.error('Error fetching wedding events:', error);
     throw error;
   }
@@ -119,6 +122,25 @@ export const deleteEvent = async (id) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting wedding event:', error);
+    throw error;
+  }
+};
+
+export const getEventProductBySlug = async (slug) => {
+  try {
+    const response = await axios.get(
+      // `https://a4celebration.com/api/api/event/get-event-by-slug/${slug}`,
+       `${API}api/event/get-event-by-slug/${slug}`,
+      {
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching product by slug:', error);
     throw error;
   }
 };

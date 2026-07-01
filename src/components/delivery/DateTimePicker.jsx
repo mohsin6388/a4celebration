@@ -12,8 +12,10 @@ import {
   isSameDay
 } from 'date-fns';
 import { FaLock } from 'react-icons/fa';
+import { API } from "../../utils/api";
 
 export const TimeSlotPicker = ({ onTimeSlotSelect, PIN }) => {
+  const token = import.meta.env.VITE_API_KEY;
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
@@ -27,16 +29,24 @@ export const TimeSlotPicker = ({ onTimeSlotSelect, PIN }) => {
   useEffect(() => {
     const fetchCurrentTime = async () => {
       try {
-        const response = await axios.get('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata');
+        // const response = await axios.get('https://a4celebration.com/api/api/time',
+        const response = await axios.get(`${API}/api/time`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+
+        );
         const { year, month, day, hour, minute } = response.data;
-        
+
         // Create date object from API response (month is 1-12 in the API)
         const currentDate = new Date(year, month - 1, day, hour, minute);
         setApiDate(currentDate);
-        
+
         // Set both min date and selected date to API date
         const formattedDate = format(currentDate, 'yyyy-MM-dd');
-        
+
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching time:', error);
@@ -114,20 +124,20 @@ export const TimeSlotPicker = ({ onTimeSlotSelect, PIN }) => {
     setSelectedSlot(null);
   }, [selectedDate, PIN, apiDate]);
 
- const handleDateChange = (e) => {
-  if (PIN === false) return;
-  
-  const chosenDate = new Date(e.target.value);
-  const minDate = new Date(format(apiDate, 'yyyy-MM-dd'));
+  const handleDateChange = (e) => {
+    if (PIN === false) return;
 
-  if (chosenDate < minDate) {
-    e.target.value = format(apiDate, 'yyyy-MM-dd');
-    return;
-  }
+    const chosenDate = new Date(e.target.value);
+    const minDate = new Date(format(apiDate, 'yyyy-MM-dd'));
 
-  setSelectedDate(e.target.value);
-  onTimeSlotSelect(null);
-};
+    if (chosenDate < minDate) {
+      e.target.value = format(apiDate, 'yyyy-MM-dd');
+      return;
+    }
+
+    setSelectedDate(e.target.value);
+    onTimeSlotSelect(null);
+  };
 
 
   const handleSlotSelect = (slot) => {

@@ -28,10 +28,10 @@ const CityModal = ({ isOpen, onClose }) => {
     { name: 'Delhi', image: img2 },
     { name: 'Noida', image: img5 },
     { name: 'Gurugram', image: img5 },
-    { name: 'Pune', image: img1 },
-    { name: 'Mumbai', image: hyd },
+    // { name: 'Pune', image: img1 },
+    // { name: 'Mumbai', image: hyd },
     { name: 'Kanpur', image: img3 },
-    { name: 'Bengaluru', image: img4 },
+    // { name: 'Bengaluru', image: img4 },
   ];
 
   const handleCitySelect = (city) => {

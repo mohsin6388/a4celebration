@@ -9,6 +9,8 @@ import useUserCartData from "../../hooks/useUserCartData";
 import { useCart } from '../../hooks/cartHook';
 import axios from "axios";
 import { getCoupon } from "../../services/coupon-service/coupon";
+import { useRef } from "react";
+import { API } from "../../utils/api";
 
 
 const Cart = () => {
@@ -82,6 +84,32 @@ const Cart = () => {
     };
     fetchCoupons();
   }, []);
+
+  const sliderRef = useRef(null);
+
+  // Auto scroll
+  useEffect(() => {
+    if (coupons.length <= 1) return; // no auto scroll if only 1
+    const interval = setInterval(() => {
+      if (sliderRef.current) {
+        sliderRef.current.scrollBy({
+          left: 260, // card width + margin
+          behavior: "smooth",
+        });
+
+        // Reset scroll if at end
+        if (
+          sliderRef.current.scrollLeft + sliderRef.current.clientWidth >=
+          sliderRef.current.scrollWidth
+        ) {
+          sliderRef.current.scrollTo({ left: 0, behavior: "smooth" });
+        }
+      }
+    }, 3000); // change every 3s
+
+    return () => clearInterval(interval);
+  }, [coupons]);
+
   return (
     <div className="min-h-screen bg-white font-poppins">
       <ToastContainer />
@@ -146,13 +174,15 @@ const Cart = () => {
                     </div>
                     <div className="p-4 md:p-6">
                       <div className="flex flex-col md:flex-row gap-6">
-                        <div className="relative h-32 w-32 mx-auto md:mx-0 rounded-lg overflow-hidden border-2 border-amber-200 bg-white">
-                          <img
-                            src={"https://a4celebration.com/api/" + item.featured_image}
-                            alt={item.product_name}
-                            className="object-cover w-full h-full"
-                          />
-                        </div>
+                       <div className="relative w-[70vw] h-[50vw] md:w-32 md:h-32 mx-auto md:mx-0 rounded-lg overflow-hidden border-2 border-amber-200 bg-white">
+  <img
+    // src={"https://a4celebration.com/api/" + item.featured_image}
+    src={`${API}${item.featured_image}`}
+    alt={item.product_name}
+    className="object-cover w-full h-full"
+  />
+</div>
+
                         <div className="flex-1 space-y-3">
                           <div>
                             <Link to="#" className="text-amber-800 hover:text-amber-600 font-medium text-lg">
@@ -170,7 +200,8 @@ const Cart = () => {
       <Calendar className="h-4 w-4 text-amber-600" />
       <p className="text-sm text-gray-700">
         <span className="font-medium">Booking Date:</span>{" "}
-        {new Date(item.service_date).toLocaleDateString()}
+      {`${String(new Date(item.service_date).getDate()).padStart(2, '0')}-${String(new Date(item.service_date).getMonth() + 1).padStart(2, '0')}-${new Date(item.service_date).getFullYear()}`}
+
       </p>
     </div>
     <div className="flex items-center gap-2">
@@ -236,63 +267,65 @@ const Cart = () => {
                   <h2 className="text-center text-amber-800 font-bold">Order Summary</h2>
                 </div>
                 <div className="p-6 space-y-6">
-                <div className="space-y-3">
-  {coupons
-    .filter(coupon => new Date(coupon.expiryDate) >= new Date())
-    .map((coupon) => {
-      // Determine coupon status
-      const isUsedUp = coupon.usedCount >= coupon.usageLimit;
-      const isActive = coupon.isActive && !isUsedUp;
+               <div
+      ref={sliderRef}
+      className="flex overflow-x-auto space-x-3 scrollbar-hide scroll-smooth py-2"
+    >
+      {coupons
+        .filter((coupon) => new Date(coupon.expiryDate) >= new Date())
+        .map((coupon) => {
+          const isUsedUp = coupon.usedCount >= coupon.usageLimit;
+          const isActive = coupon.isActive && !isUsedUp;
 
-      // Choose color scheme based on status
-      let colorScheme = {
-        bgFrom: 'from-amber-50',
-        bgTo: 'to-amber-100',
-        border: 'border-amber-200',
-        textCode: 'text-amber-700',
-        textDesc: 'text-amber-600',
-        textDate: 'text-amber-500',
-        textValue: 'text-amber-700',
-        badgeBg: 'bg-amber-200',
-        badgeText: 'text-amber-800'
-      };
+          // 🎨 Color scheme
+          let colorScheme = {
+            bgFrom: "from-amber-50",
+            bgTo: "to-amber-100",
+            border: "border-amber-200",
+            textCode: "text-amber-700",
+            textDesc: "text-amber-600",
+            textDate: "text-amber-500",
+            textValue: "text-amber-700",
+            badgeBg: "bg-amber-200",
+            badgeText: "text-amber-800",
+          };
 
-      if (!isActive) {
-        colorScheme = {
-          bgFrom: 'from-rose-50',
-          bgTo: 'to-rose-100',
-          border: 'border-rose-200',
-          textCode: 'text-rose-700',
-          textDesc: 'text-rose-600',
-          textDate: 'text-rose-500',
-          textValue: 'text-rose-700',
-          badgeBg: 'bg-rose-200',
-          badgeText: 'text-rose-800'
-        };
-      } else if (coupon.discountType === 'fixed') {
-        colorScheme = {
-          bgFrom: 'from-blue-50',
-          bgTo: 'to-blue-100',
-          border: 'border-blue-200',
-          textCode: 'text-blue-700',
-          textDesc: 'text-blue-600',
-          textDate: 'text-blue-500',
-          textValue: 'text-blue-700',
-          badgeBg: 'bg-blue-200',
-          badgeText: 'text-blue-800'
-        };
-      }
+          if (!isActive) {
+            colorScheme = {
+              bgFrom: "from-rose-50",
+              bgTo: "to-rose-100",
+              border: "border-rose-200",
+              textCode: "text-rose-700",
+              textDesc: "text-rose-600",
+              textDate: "text-rose-500",
+              textValue: "text-rose-700",
+              badgeBg: "bg-rose-200",
+              badgeText: "text-rose-800",
+            };
+          } else if (coupon.discountType === "fixed") {
+            colorScheme = {
+              bgFrom: "from-blue-50",
+              bgTo: "to-blue-100",
+              border: "border-blue-200",
+              textCode: "text-blue-700",
+              textDesc: "text-blue-600",
+              textDate: "text-blue-500",
+              textValue: "text-blue-700",
+              badgeBg: "bg-blue-200",
+              badgeText: "text-blue-800",
+            };
+          }
 
-      // Format discount value
-      const discountValue = coupon.discountType === 'percentage' 
-        ? `${coupon.discountValue}% OFF` 
-        : `₹${coupon.discountValue} OFF`;
+          const discountValue =
+            coupon.discountType === "percentage"
+              ? `${coupon.discountValue}% OFF`
+              : `₹${coupon.discountValue} OFF`;
 
-      // Format expiry date
-      const expiryDate = `Valid until ${new Date(coupon.expiryDate).toLocaleDateString()}`;
+          const expiryDate = `Valid until ${new Date(
+            coupon.expiryDate
+          ).toLocaleDateString()}`;
 
-      // Function to handle copy to clipboard
-     const handleCopyCode = () => {
+           const handleCopyCode = () => {
   navigator.clipboard.writeText(coupon.code)
     .then(() => {
       // Success toast
@@ -325,60 +358,68 @@ const Cart = () => {
     });
 };
 
+          return (
+            <div
+              key={coupon._id}
+              className={`min-w-[250px] relative p-3 rounded-lg bg-gradient-to-r ${colorScheme.bgFrom} ${colorScheme.bgTo} border ${colorScheme.border} ${
+                !isActive ? "opacity-70" : ""
+              }`}
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className={`text-xs ${colorScheme.textDesc}`}>
+                    {coupon.discountType === "percentage"
+                      ? `Get ${coupon.discountValue}% discount`
+                      : `Get ₹${coupon.discountValue} discount`}
+                  </p>
+                  <p className={`text-[10px] ${colorScheme.textDate}`}>
+                    {expiryDate}
+                  </p>
+                  {isUsedUp && (
+                    <p className="text-[10px] text-rose-500">
+                      Usage limit reached
+                    </p>
+                  )}
+                </div>
+                <div
+                  className={`font-bold text-sm ${
+                    !isActive ? "line-through" : ""
+                  } ${colorScheme.textValue}`}
+                >
+                  {discountValue}
+                </div>
+              </div>
 
-      return (
-        <div 
-          key={coupon._id}
-          className={`relative p-4 rounded-lg bg-gradient-to-r ${colorScheme.bgFrom} ${colorScheme.bgTo} border-2 ${colorScheme.border} border-dashed ${!isActive ? 'opacity-70' : ''}`}
-        >
-          <div className="flex justify-between items-center">
-            <div>
-             
-              <p className={`text-sm ${colorScheme.textDesc}`}>
-                {coupon.discountType === 'percentage' 
-                  ? `Get ${coupon.discountValue}% discount on your order`
-                  : `Get ₹${coupon.discountValue} discount on your order`}
-              </p>
-              <p className={`text-xs ${colorScheme.textDate} mt-1`}>
-                {expiryDate}
-              </p>
-              {isUsedUp && (
-                <p className="text-xs text-rose-500 mt-1">
-                  Usage limit reached
-                </p>
+              {isActive && (
+                <span
+                  onClick={handleCopyCode}
+                  className={`inline-flex items-center gap-1 font-bold text-xs mt-2 ${colorScheme.textCode} cursor-pointer hover:underline`}
+                  title="Click to copy"
+                >
+                  {coupon.code}
+                  <Copy className="w-3 h-3 text-gray-500" />
+                </span>
+              )}
+
+              {/* Badges */}
+              {!isActive && (
+                <div
+                  className={`absolute top-0 right-0 ${colorScheme.badgeBg} ${colorScheme.badgeText} text-[10px] px-2 py-0.5 rounded-bl-lg rounded-tr-lg`}
+                >
+                  {isUsedUp ? "Used Up" : "Inactive"}
+                </div>
+              )}
+              {isActive && coupon.discountValue >= 20 && (
+                <div
+                  className={`absolute top-0 right-0 ${colorScheme.badgeBg} ${colorScheme.badgeText} text-[10px] px-2 py-0.5 rounded-bl-lg rounded-tr-lg`}
+                >
+                  Hot Deal
+                </div>
               )}
             </div>
-            <div className={`font-bold text-xl ${!isActive ? 'line-through' : ''} ${colorScheme.textValue}`}>
-              {discountValue}
-            </div>
-          </div>
-
-          {!isActive && (
-            <div className={`absolute top-0 right-0 ${colorScheme.badgeBg} ${colorScheme.badgeText} text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg`}>
-              {isUsedUp ? 'Used Up' : 'Inactive'}
-            </div>
-          )}
-          {isActive && coupon.discountValue >= 20 && (
-            <>
-             <span
-  onClick={handleCopyCode}
-  className={`inline-flex items-center gap-2 font-bold text-lg ${colorScheme.textCode} cursor-pointer hover:underline`}
-  title="Click to copy"
->
-  {coupon.code}
-  <Copy className="text-gray-500" />
-</span>
-
-           
-            <div className={`absolute top-0 right-0 ${colorScheme.badgeBg} ${colorScheme.badgeText} text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg`}>
-              Hot Deal
-            </div>
-             </>
-          )}
-        </div>
-      );
-    })}
-</div>
+          );
+        })}
+    </div>
 
                   <hr className="bg-amber-100" />
 

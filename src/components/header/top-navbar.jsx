@@ -17,6 +17,7 @@ import CityModal from "../locations/CityModal"; // Ensure you import CityModal
 import { useSelector } from 'react-redux';
 import { FaUser } from "react-icons/fa6";
 import unknown from '../../assets/profile/360_F_332596535_lAdLhf6KzbW6PWXBWeIFTovTii1drkbT.jpg'
+import { API } from "../../utils/api";
 
 
 const TopNavbar = () => {
@@ -109,7 +110,7 @@ console.log(isAuthenticated)
                 backgroundImage: `url(${userData?.data?.profile_image
                   ? userData.data.social_type === 'google'
                     ? (userData.data.profile_image)
-                    : "https://a4celebration.com/api/" + sanitizePath(userData.data.profile_image)
+                    : `${API}/api` + sanitizePath(userData.data.profile_image)
                   : unknown
                   })`
                 ,

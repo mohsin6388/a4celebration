@@ -9,6 +9,7 @@ import { EyeIcon } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchRatingsForProduct } from '../../redux/ratingSlice';
 import StarRating from '../ratings/StarRating';
+import { API } from "../../utils/api";
 
 const CardTypeA = ({
   services = [],
@@ -21,6 +22,9 @@ const CardTypeA = ({
   sectionSlug,
   title
 }) => {
+
+
+  console.log("exact images ===>", services)
 
 
 
@@ -101,6 +105,8 @@ const CardTypeA = ({
           {services?.map((service, index) => {
             const words = service.name.split(" ");
             return (
+
+              <>
               <SwiperSlide key={index}>
                 <Link
                   to={`${sectionSlug}/${service.slug_url}`}
@@ -117,7 +123,7 @@ const CardTypeA = ({
                     {/* Image Section - Fixed Height */}
                     <div className="sign_box_img flex justify-center mb-2 h-40">
                       <img
-                        src={service.featured_image ? "https://a4celebration.com/api/" + service.featured_image : baseImageUrl}
+                        src={`${API}${service.featured_image}`}
                         alt={service.name}
                         className="object-cover rounded-lg w-full h-full"
                       />
@@ -168,10 +174,13 @@ const CardTypeA = ({
                   </div>
                 </Link>
               </SwiperSlide>
+
+              </>
             );
           })}
         </Swiper>
       </div>
+
     </section>
   );
 };

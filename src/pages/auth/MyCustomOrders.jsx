@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getCustomizedRequests } from '../../services/customized-products/customized-api-service';
 import { Package } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { API } from '../../utils/api';
 
 const MyCustomOrders = () => {
   const [requests, setRequests] = useState([]);
@@ -80,7 +81,7 @@ const MyCustomOrders = () => {
                               <div className="flex-shrink-0 h-16 w-16 mr-4">
                                 <img
                                   className="h-full w-full rounded-md object-cover"
-                                  src={`https://a4celebration.com/api/${req.requestedEventImage}`}
+                                  src={`${API}api/${req.requestedEventImage}`}
                                   alt={req.requestedIdName}
                                 />
                               </div>
@@ -233,7 +234,7 @@ const MyCustomOrders = () => {
                       <div className="h-40 w-full relative">
                         <img
                           className="h-full w-full object-cover"
-                          src={`https://a4celebration.com/api/${req.requestedEventImage}`}
+                          src={`${API}api/${req.requestedEventImage}`}
                           alt={req.requestedIdName}
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">

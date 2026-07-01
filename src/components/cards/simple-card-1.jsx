@@ -9,6 +9,7 @@ import { EyeIcon } from 'lucide-react';
 import Lottie from 'lottie-react';
 import animationData from './Animation - 1751703073724.json'; // Replace with your Lottie file path
 import StarRating from '../ratings/StarRating';
+import { API } from "../../utils/api";
 
 const SimpleCard1 = ({
   title = "Featured Services",
@@ -109,7 +110,7 @@ const SimpleCard1 = ({
                   >
                     <div className="sign_box_img flex justify-center mb-2 h-40">
                       <img
-                        src={`${"https://a4celebration.com/api/" + service.featured_image}`}
+                         src={`${API}${service.featured_image}`}
                         alt={service.name}
                         className="object-cover rounded-lg w-full h-full"
                       />

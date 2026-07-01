@@ -38,7 +38,8 @@ import ProfileOrderConfirmation from "../pages/orders/ProfileOrderConfirmation";
 import ProfileCustomOrderConfirmation from "../pages/orders/ProfileCustomizedOrderConfirmation";
 import ContactPage from "../pages/contact/Contact";
 import AboutUs from "../pages/about-us/AboutUs";
-import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
+// import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
+import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy"
 import TermsOfService from "../pages/terms-conditions/Terms";
 import RefundPolicy from "../pages/refund/Refund";
 import AuthMiddleware from "./AuthMiddleware";
@@ -51,6 +52,8 @@ const RoutesComponent = () =>{
       <Route path="/" element={<Home />} />
       <Route path="/decorations" element={<Decoration />} />
       <Route path="/decorations/:slug" element={<Decoration />} />
+       <Route path="/artist-management" element={<Artist/>} />
+          <Route path="/artist-management/:slug" element={<Artist/>} />
       <Route path="/giftings" element={<Gifting />} />
       <Route path="/giftings/:slug" element={<Gifting />} />
       <Route path="/artists" element={<Artist />} />
@@ -64,8 +67,12 @@ const RoutesComponent = () =>{
       {/* Product Details */}
       <Route path="/decorations/service/:slug" element={<DecorationsDetailsPage />} />
       <Route path="/gifts/e-commerce/:slug" element={<GiftsDetailsPage />} />
+        <Route path="/artist-management/service/:slug" element={<ArtistManagementDetailsPage />} />
       <Route path="/event-management/service/:slug" element={<EventManagementDetailsPage />} />
       <Route path="/artist/service/:slug" element={<ArtistManagementDetailsPage />} />
+       <Route path="/event-catering" element={<Caterings></Caterings>} />
+      <Route path="/event-catering/:slug" element={<Caterings></Caterings>} />
+       
       <Route path="/event-catering/service/:slug" element={<CateringEventsDetailsPage />} />
 
       {/* Auth Routes */}

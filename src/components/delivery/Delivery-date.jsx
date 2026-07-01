@@ -28,7 +28,11 @@ const PincodeDeliveryChecker = ({ onDeliveryAvailable, pincode, setPincode }) =>
     <div className="w-full mx-auto mb-1 text-left font-poppins bg-amber-50 p-1 rounded-lg">
       <p className="text-lg font-bold mb-1 text-amber-700 font-playfair">
         🚚 Check Service Availability in {selectedCity || "your city"}
+          {
+        selectedCity===null?<span className="text-red-500 text-sm ml-2 ">(please select a city)</span>:<></>
+      }
       </p>
+    
 
       <div className="flex border border-amber-300 rounded-lg overflow-hidden shadow product-shadow">
         <input

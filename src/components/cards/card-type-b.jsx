@@ -11,6 +11,7 @@ import { EyeIcon } from "lucide-react"
 import GiftWishlistButton from "../../pages/wishlist/giftWishlistButton"
 import GiftCardWishlistButton from "../../pages/wishlist/giftCardWishlistButton"
 import StarRating from "../ratings/StarRating"
+import { API } from "../../utils/api"
 
 
 const CardTypeB = ({
@@ -140,7 +141,7 @@ const CardTypeB = ({
                       <img
                         src={
                           service.featured_image
-                            ? "https://a4celebration.com/api/" + service.featured_image
+                            ? `${API}${service.featured_image}`
                             : baseImageUrl
                         }
                         alt={service.name}

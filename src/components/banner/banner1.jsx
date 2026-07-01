@@ -1,11 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import img1 from '../../assets/banner/1860 400 BIRTHDAY (1).jpg'
+import img2 from '../../assets/banner/mobile/mp95a1mdt8t4qlnagmxj.webp'
 import { Link } from 'react-router-dom';
 
 // Image sources
 const desktopImg =img1;
-const mobileImg =img1;
+const mobileImg =img2;
 
 const Banner1 = () => {
   return (
