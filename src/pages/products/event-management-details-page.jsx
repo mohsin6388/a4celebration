@@ -15,7 +15,7 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { useCustomModalData } from "../../context/CustomModalContext";
 import MetaTags from "../../components/SEO/MetaTags";
 import { getEventProductBySlug } from "../../services/event-management/events-management-api-service";
-import { API } from "../../utils/api";
+import {API} from "../../utils/api"
 
 const EventManagementDetailsPage = () => {
   const { slug } = useParams();
@@ -304,7 +304,7 @@ const EventManagementDetailsPage = () => {
             <div className="relative rounded-2xl overflow-hidden mb-8 shadow-lg group">
               <div className="aspect-[4/3] relative">
                 <img
-                  src={`${API}/${images[currentImageIndex]}`}
+                  src={`${API}${images[currentImageIndex]}`}
                   alt={serviceData.name || "Event Venue"}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />

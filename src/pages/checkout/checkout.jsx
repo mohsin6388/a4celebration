@@ -210,7 +210,7 @@ const [coupons, setCoupons] = useState([]);
                           <div className="w-20 h-20 relative rounded-lg overflow-hidden border-2 border-amber-200 shadow-sm">
                             <img
                               // src={"https://a4celebration.com/api/" + item.featured_image}
-                              src={`${API_BASE_URL}${item.featured_image}`}
+                              src={`${API}${item.featured_image}`}
                               alt={item.name}
                               className="object-cover w-full h-full"
                             />
@@ -416,6 +416,7 @@ const [coupons, setCoupons] = useState([]);
 />
             </div>
           </div>
+          
         </div>
       </div>
     </>

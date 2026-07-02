@@ -18,6 +18,7 @@ import CompactRating from '../../components/ratings/RatingWithReviews';
 import CompactReviewSlider from '../../components/ratings/Rating';
 import MetaTags from '../../components/SEO/MetaTags';
 import { getGiftProductBySlug } from '../../services/giftings/gifting-api-service';
+import {API} from "../../utils/api"
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');

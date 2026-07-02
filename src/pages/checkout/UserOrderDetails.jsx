@@ -544,7 +544,7 @@ export const UserOrderDetails = ({ cartItems = [], currencySymbol, userData, dis
                     <h3 className="text-lg font-semibold text-gray-800">Select Payment Method</h3>
 
                     {/* Razorpay Option */}
-                    <div className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:border-amber-300 transition-colors">
+                    {/* <div className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:border-amber-300 transition-colors">
                         <input
                             type="radio"
                             id="razorpay"
@@ -563,7 +563,7 @@ export const UserOrderDetails = ({ cartItems = [], currencySymbol, userData, dis
                                 <p className="text-sm text-gray-500">Credit/Debit Cards, UPI, Netbanking</p>
                             </div>
                         </label>
-                    </div>
+                    </div> */}
 
                     
 

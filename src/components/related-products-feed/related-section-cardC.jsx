@@ -9,6 +9,7 @@ import { EyeIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEvents, removeEvent } from '../../redux/eventManagementSlice';
+import {API} from "../../utils/api"
 
 const RelatedSectionCardC = ({
   title = "Featured Services",
