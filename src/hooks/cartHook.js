@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_BASE = "http://2.25.73.204:3000/api/" 
+const API_BASE = "https://api.a4celebration.com/api/" 
 // const API_BASE = "http://localhost:3000/api/" 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
